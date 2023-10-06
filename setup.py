@@ -120,10 +120,10 @@ if __name__ == "__main__":
         "Operating System :: MacOS",
         "Operating System :: Unix",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3 :: Only",
     ]
     """
@@ -187,6 +187,7 @@ if __name__ == "__main__":
             "console_scripts": [
                 "boto3=findref.cli:run_boto3",
                 "cdk-python=findref.cli:run_cdk_python",
+                "tf=findref.cli:run_tf",
             ],
         },
     )

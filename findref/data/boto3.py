@@ -2,7 +2,6 @@
 
 import typing as T
 import re
-import json
 import subprocess
 import dataclasses
 
@@ -13,6 +12,7 @@ from bs4 import BeautifulSoup
 from ..http import get_html_with_cache
 from ..paths import dir_findref_home
 from ..os_platform import IS_WINDOWS
+from ..utils import preprocess_query
 
 
 DATASET_NAME = "boto3"
@@ -292,6 +292,7 @@ class Item(afwf_shell.Item):
 
 
 def search(query: str) -> T.List[Item]:
+    query = preprocess_query(query)
     docs = dataset.search(
         download_kwargs={},
         query=query,
@@ -320,16 +321,12 @@ def search(query: str) -> T.List[Item]:
 
 
 def handler(query: str, ui: afwf_shell.UI):
-    query = query.strip()
-    if not query:
-        query = "*"
-
     if dir_index.exists() is False:
         items = [
             Item(
                 uid="uid",
-                title="Creating index ...",
-                subtitle="please wait, don't press any key.",
+                title="Creating index, it may takes 1-2 minutes ...",
+                subtitle="please wait, don't press any key",
             )
         ]
         ui.print_items(items=items)

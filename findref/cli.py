@@ -4,6 +4,7 @@ import fire
 
 from .data.boto3 import main as boto3_main
 from .data.cdk_python import main as cdk_python_main
+from .data.tf import main as tf_main
 
 
 def run_boto3():
@@ -14,9 +15,5 @@ def run_cdk_python():
     fire.Fire(cdk_python_main)
 
 
-def run_cdk_ts():
-    raise NotImplementedError
-
-
-def run_cdk_java():
-    raise NotImplementedError
+def run_tf():
+    fire.Fire(tf_main)
