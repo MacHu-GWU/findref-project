@@ -15,6 +15,17 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.0.3 (2023-10-06)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Add ``boto3`` dataset.
+
+**Bugfixes**
+
+- Fix a bug that cannot open URL in Windows.
+
+
 0.0.2 (2023-10-06)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Bugfixes**
@@ -28,6 +39,7 @@ x.y.z (Backlog)
 
 - First release.
 - 0.0.X are experimental release. Please don't expect API stability.
+- Add ``cdk_python`` dataset.
 
 **Miscellaneous**
 
