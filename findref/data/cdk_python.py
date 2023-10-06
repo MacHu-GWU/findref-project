@@ -91,7 +91,7 @@ def parse_service_page(service_name: str, service_html: str) -> T.List[Link]:
     return links
 
 
-def downloader(first_n_service: int = 50) -> T.List[T.Dict[str, T.Any]]:
+def downloader(first_n_service: int = 999) -> T.List[T.Dict[str, T.Any]]:
     homepage_html = get_html_with_cache(homepage_url)
     services = parse_homepage(homepage_html)
     records = list()
