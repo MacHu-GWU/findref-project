@@ -6,20 +6,6 @@ import shutil
 import subprocess
 import dataclasses
 
-try:
-    import markdown
-except ImportError:
-    import sys
-    from pathlib import Path
-
-    bin_python = Path(sys.executable)
-    bin_pip = bin_python.parent.joinpath("pip")
-    subprocess.run([f"{bin_pip}", "install", "markdown>=3.0.1,<4.0.0"])
-    subprocess.run(
-        [f"{bin_pip}", "install", "markdown-full-yaml-metadata>=2.0.0,<3.0.0"]
-    )
-    import markdown
-
 import sayt.api as sayt
 import afwf_shell.api as afwf_shell
 
@@ -139,6 +125,8 @@ class Record:
 
 
 def extract_record_for_provider(provider: Provider) -> T.List[Record]:
+    import markdown
+
     md = markdown.Markdown(extensions=["full_yaml_metadata"])
     records = list()
     for item_type in ITEM_TYPES:
@@ -317,6 +305,21 @@ def handler(query: str, ui: afwf_shell.UI):
 
 def main():
     clone_all_repos_again(skip_if_exists=True)
+
+    try:
+        import markdown
+    except ImportError:
+        import sys
+        from pathlib import Path
+
+        bin_python = Path(sys.executable)
+        bin_pip = bin_python.parent.joinpath("pip")
+        subprocess.run([f"{bin_pip}", "install", "markdown>=3.0.1,<4.0.0"])
+        subprocess.run(
+            [f"{bin_pip}", "install", "markdown-full-yaml-metadata>=2.0.0,<3.0.0"]
+        )
+        import markdown
+
     afwf_shell.debugger.enable()
     afwf_shell.debugger.path_log_txt.unlink(missing_ok=True)
     ui = afwf_shell.UI(handler=handler)
