@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import typing as T
+import time
 import subprocess
 import dataclasses
 
@@ -90,7 +91,7 @@ def parse_service_page(service_name: str, service_html: str) -> T.List[Link]:
     return links
 
 
-def downloader(first_n_service: int = 999) -> T.List[T.Dict[str, T.Any]]:
+def downloader(first_n_service: int = 50) -> T.List[T.Dict[str, T.Any]]:
     homepage_html = get_html_with_cache(homepage_url)
     services = parse_homepage(homepage_html)
     records = list()
@@ -119,18 +120,33 @@ def extractor(
     download_kwargs: sayt.T_KWARGS,
     context: sayt.T_CONTEXT,
 ) -> sayt.T_RECORD:
-    return record
+    doc = {
+        "srv": record["service"],
+        "srv_ng": record["service"],
+        "obj": record["object"],
+        "obj_ng": record["object"],
+        "url": record["url"],
+    }
+    return doc
 
 
 fields = [
+    sayt.TextField(
+        name="srv",
+        stored=True,
+    ),
+    sayt.TextField(
+        name="obj",
+        stored=True,
+    ),
     sayt.NgramWordsField(
-        name="service",
+        name="srv_ng",
         stored=True,
         minsize=2,
         maxsize=6,
     ),
     sayt.NgramWordsField(
-        name="object",
+        name="obj_ng",
         stored=True,
         minsize=2,
         maxsize=6,
@@ -154,32 +170,60 @@ dataset = sayt.RefreshableDataSet(
 @dataclasses.dataclass
 class Item(afwf_shell.Item):
     def enter_handler(self):
+        # raise Exception("Item.enter_handler() method is NOT IMPLEMENTED")
         if IS_WINDOWS:
             subprocess.run(["start", self.variables["url"]])
         else:
             subprocess.run(["open", self.variables["url"]])
 
 
-def handler(query: str):
-    query = query.strip()
-    if not query:
-        query = "*"
+def search(query: str) -> T.List[Item]:
     docs = dataset.search(
-        download_kwargs={}, query=query, limit=20, simple_response=True
+        download_kwargs={},
+        query=query,
+        limit=20,
+        simple_response=True,
     )
     return [
         Item(
             uid=doc["url"],
-            title=doc["service"] + " - " + doc["object"],
+            title=doc["srv"] + " - " + doc["obj"],
             subtitle=doc["url"],
             arg=doc["url"],
-            autocomplete=doc["service"] + " - " + doc["object"],
+            autocomplete=doc["srv"] + " - " + doc["obj"],
             variables=doc,
         )
         for doc in docs
     ]
 
 
+def handler(query: str, ui: afwf_shell.UI):
+    query = query.strip()
+    if not query:
+        query = "*"
+
+    if dir_index.exists() is False:
+        items = [
+            Item(
+                uid="uid",
+                title="Creating index ...",
+                subtitle="please wait, don't press any key.",
+            )
+        ]
+        ui.print_items(items=items)
+
+        items = search(query)
+        ui.move_to_end()
+        ui.clear_items()
+        ui.clear_query()
+        ui.print_query()
+        return items
+
+    return search(query)
+
+
 def main():
+    afwf_shell.debugger.enable()
+    afwf_shell.debugger.path_log_txt.unlink(missing_ok=True)
     ui = afwf_shell.UI(handler=handler)
     ui.run()

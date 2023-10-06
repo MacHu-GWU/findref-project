@@ -15,6 +15,9 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.1.1 (2023-10-05)
+0.0.1 (2023-10-06)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
 - First release
+- 0.0.X are experimental release.
