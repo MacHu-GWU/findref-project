@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import typing as T
-import time
 import subprocess
 import dataclasses
 
@@ -13,6 +12,7 @@ from ..http import get_html_with_cache
 from ..paths import dir_findref_home
 from ..os_platform import IS_WINDOWS
 
+
 DATASET_NAME = "cdk_python"
 
 _dir_home = dir_findref_home.joinpath(DATASET_NAME)
@@ -20,8 +20,6 @@ _dir_home.mkdir(parents=True, exist_ok=True)
 
 dir_index = _dir_home.joinpath(".index")
 dir_cache = _dir_home.joinpath(".cache")
-
-HTML_CACHE_EXPIRE = 24 * 3600  # 24 hours
 
 base_url = "https://docs.aws.amazon.com/cdk/api/v2/python"
 homepage_url = f"{base_url}/index.html"
@@ -91,7 +89,7 @@ def parse_service_page(service_name: str, service_html: str) -> T.List[Link]:
     return links
 
 
-def downloader(first_n_service: int = 999) -> T.List[T.Dict[str, T.Any]]:
+def downloader(first_n_service: int = 30) -> T.List[T.Dict[str, T.Any]]:
     homepage_html = get_html_with_cache(homepage_url)
     services = parse_homepage(homepage_html)
     records = list()
@@ -170,9 +168,8 @@ dataset = sayt.RefreshableDataSet(
 @dataclasses.dataclass
 class Item(afwf_shell.Item):
     def enter_handler(self):
-        # raise Exception("Item.enter_handler() method is NOT IMPLEMENTED")
         if IS_WINDOWS:
-            subprocess.run(["start", self.variables["url"]])
+            subprocess.run(["start", self.variables["url"]], shell=True)
         else:
             subprocess.run(["open", self.variables["url"]])
 
