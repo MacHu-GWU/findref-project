@@ -19,5 +19,10 @@ x.y.z (Backlog)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
-- First release
-- 0.0.X are experimental release.
+- First release.
+- 0.0.X are experimental release. Please don't expect API stability.
+
+**Miscellaneous**
+
+- Tested on MacOS
+- Tested on Windows
