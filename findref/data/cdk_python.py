@@ -89,7 +89,7 @@ def parse_service_page(service_name: str, service_html: str) -> T.List[Link]:
     return links
 
 
-def downloader(first_n_service: int = 30) -> T.List[T.Dict[str, T.Any]]:
+def downloader(first_n_service: int = 999) -> T.List[T.Dict[str, T.Any]]:
     homepage_html = get_html_with_cache(homepage_url)
     services = parse_homepage(homepage_html)
     records = list()
@@ -178,16 +178,16 @@ def search(query: str) -> T.List[Item]:
     docs = dataset.search(
         download_kwargs={},
         query=query,
-        limit=20,
+        limit=50,
         simple_response=True,
     )
     return [
         Item(
             uid=doc["url"],
-            title=doc["srv"] + " - " + doc["obj"],
+            title="{} - {}".format(doc["srv"], doc["obj"]),
             subtitle=doc["url"],
             arg=doc["url"],
-            autocomplete=doc["srv"] + " - " + doc["obj"],
+            autocomplete="{} {}".format(doc["srv"], doc["obj"]),
             variables=doc,
         )
         for doc in docs

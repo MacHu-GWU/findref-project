@@ -295,7 +295,7 @@ def search(query: str) -> T.List[Item]:
     docs = dataset.search(
         download_kwargs={},
         query=query,
-        limit=20,
+        limit=50,
         simple_response=True,
     )
     return [
@@ -303,15 +303,15 @@ def search(query: str) -> T.List[Item]:
             uid=doc["url"],
             title="{} | {}.{}".format(
                 doc["type"],
-                doc["service_id"].lower(),
-                doc["method"],
+                doc["srv_id"].lower(),
+                doc["meth"],
             ),
             subtitle=doc["url"],
             arg=doc["url"],
-            autocomplete="{} | {}.{}".format(
+            autocomplete="{} {} {}".format(
                 doc["type"],
-                doc["service_id"].lower(),
-                doc["method"],
+                doc["srv_id"].lower(),
+                doc["meth"],
             ),
             variables=doc,
         )

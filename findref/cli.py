@@ -20,7 +20,3 @@ def run_cdk_ts():
 
 def run_cdk_java():
     raise NotImplementedError
-
-
-def run_boto3():
-    raise NotImplementedError
