@@ -74,6 +74,9 @@ Usage example::
     # hit Enter to jump to open the reference in web browser
 
 
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/41de65f4-424e-429f-a802-18fa67e0517b
+
+
 .. _install:
 
 Install
