@@ -11,7 +11,12 @@ import afwf_shell.api as afwf_shell
 
 from ..paths import dir_findref_home
 from ..os_platform import IS_WINDOWS
-from ..utils import preprocess_query
+from ._utils import (
+    Item,
+    preprocess_query,
+    print_creating_index,
+    another_event_loop_until_print_items,
+)
 
 
 DATASET_NAME = "tf"
@@ -135,8 +140,9 @@ def extract_record_for_provider(provider: Provider) -> T.List[Record]:
             item_name = p.name.split(".")[0]
             content = p.read_text()
             md.convert(content)
-            subcategory = md.Meta["subcategory"]
-            description = md.Meta["description"]
+            subcategory: str = md.Meta["subcategory"]
+            description: str = md.Meta["description"]
+            description = " ".join([line.strip() for line in description.splitlines()])
             record = Record(
                 provider=provider.provider_short_name,
                 type=item_type.item_type,
@@ -149,6 +155,7 @@ def extract_record_for_provider(provider: Provider) -> T.List[Record]:
 
 
 def downloader() -> T.List[T.Dict[str, T.Any]]:
+    clone_all_repos_again()
     records = list()
     for provider in PROVIDERS:
         records.extend(
@@ -232,21 +239,13 @@ dataset = sayt.RefreshableDataSet(
 )
 
 
-@dataclasses.dataclass
-class Item(afwf_shell.Item):
-    def enter_handler(self):
-        if IS_WINDOWS:
-            subprocess.run(["start", self.arg], shell=True)
-        else:
-            subprocess.run(["open", self.arg])
-
-
-def search(query: str) -> T.List[Item]:
+def search(query: str, refresh_data: bool = False) -> T.List[Item]:
     query = preprocess_query(query)
 
     docs = dataset.search(
         download_kwargs={},
         query=query,
+        refresh_data=refresh_data,
         limit=50,
         simple_response=True,
     )
@@ -283,29 +282,26 @@ def search(query: str) -> T.List[Item]:
 
 
 def handler(query: str, ui: afwf_shell.UI):
+    # create index for the first time
     if dir_index.exists() is False:
-        items = [
-            Item(
-                uid="uid",
-                title="Creating index, it may takes 1-2 minutes ...",
-                subtitle="please wait, don't press any key",
-            )
-        ]
-        ui.print_items(items=items)
-
+        print_creating_index(ui)
         items = search(query)
-        ui.move_to_end()
-        ui.clear_items()
-        ui.clear_query()
-        ui.print_query()
+        another_event_loop_until_print_items(ui)
+        return items
+
+    # rebuild the index with latest data, triggered by a query ends with "!~"
+    if query.strip().endswith("!~"):
+        print_creating_index(ui)
+        query = query.strip()[:-2]
+        items = search(query, refresh_data=True)
+        ui.line_editor.press_backspace(n=2)
+        another_event_loop_until_print_items(ui)
         return items
 
     return search(query)
 
 
 def main():
-    clone_all_repos_again(skip_if_exists=True)
-
     try:
         import markdown
     except ImportError:

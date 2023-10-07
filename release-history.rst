@@ -15,6 +15,18 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
+0.0.6 (2023-10-06)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+**Features and Improvements**
+
+- Hit ``Ctrl + A`` to copy url to clipboard.
+- Allow user to use ``!~`` to rebuild the index with the latest data.
+
+**Miscellaneous**
+
+- Minor refactor.
+
+
 0.0.5 (2023-10-06)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Minor Improvements**
@@ -54,6 +66,7 @@ x.y.z (Backlog)
 - First release.
 - 0.0.X are experimental release. Please don't expect API stability.
 - Add ``cdk_python`` dataset.
+- Hit ``Enter`` to open the URL in browser.
 
 **Miscellaneous**
 

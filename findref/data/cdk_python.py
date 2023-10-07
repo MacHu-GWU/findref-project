@@ -11,7 +11,12 @@ from bs4 import BeautifulSoup
 from ..http import get_html_with_cache
 from ..paths import dir_findref_home
 from ..os_platform import IS_WINDOWS
-from ..utils import preprocess_query
+from ._utils import (
+    Item,
+    preprocess_query,
+    print_creating_index,
+    another_event_loop_until_print_items,
+)
 
 
 DATASET_NAME = "cdk_python"
@@ -166,20 +171,12 @@ dataset = sayt.RefreshableDataSet(
 )
 
 
-@dataclasses.dataclass
-class Item(afwf_shell.Item):
-    def enter_handler(self):
-        if IS_WINDOWS:
-            subprocess.run(["start", self.variables["url"]], shell=True)
-        else:
-            subprocess.run(["open", self.variables["url"]])
-
-
-def search(query: str) -> T.List[Item]:
+def search(query: str, refresh_data: bool = False) -> T.List[Item]:
     query = preprocess_query(query)
     docs = dataset.search(
         download_kwargs={},
         query=query,
+        refresh_data=refresh_data,
         limit=50,
         simple_response=True,
     )
@@ -197,21 +194,20 @@ def search(query: str) -> T.List[Item]:
 
 
 def handler(query: str, ui: afwf_shell.UI):
+    # create index for the first time
     if dir_index.exists() is False:
-        items = [
-            Item(
-                uid="uid",
-                title="Creating index, it may takes 1-2 minutes ...",
-                subtitle="please wait, don't press any key.",
-            )
-        ]
-        ui.print_items(items=items)
-
+        print_creating_index(ui)
         items = search(query)
-        ui.move_to_end()
-        ui.clear_items()
-        ui.clear_query()
-        ui.print_query()
+        another_event_loop_until_print_items(ui)
+        return items
+
+    # rebuild the index with latest data, triggered by a query ends with "!~"
+    if query.strip().endswith("!~"):
+        print_creating_index(ui)
+        query = query.strip()[:-2]
+        items = search(query, refresh_data=True)
+        ui.line_editor.press_backspace(n=2)
+        another_event_loop_until_print_items(ui)
         return items
 
     return search(query)
