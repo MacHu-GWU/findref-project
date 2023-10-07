@@ -50,31 +50,68 @@
 
 Welcome to ``findref`` Documentation
 ==============================================================================
-Usage example::
+
+
+Usage Example
+------------------------------------------------------------------------------
+::
 
     # install
     $ pip install findref
 
-    # search AWS CDK Python reference
-    $ cdk-python
+    # enter the dataset name
+    $ tf # Terraform reference
+    $ cdk-python # AWS CDK Python reference
+    $ boto3 # AWS boto3 Python SDK reference
 
-    # then you can:
-    # type service name resource name to search, it support fuzzy search, ngram search
-    # hit CTRL + E or UP to move item selection up
-    # hit CTRL + R to scroll item selection up
-    # hit CTRL + D or DOWN to move item selection up
-    # hit CTRL + F to scroll item selection up
-    # hit CTRL + H or LEFT to move query input cursor to the left
-    # hit CTRL + L or RIGHT to move query input cursor to the right
-    # hit CTRL + G to move query input cursor to the previous word
-    # hit CTRL + K to move query input cursor to the next word
-    # hit CTRL + X to clear the query input
-    # hit BACKSPACE to delete query input backward
-    # hit DELETE to delete query input forward
-    # hit Enter to jump to open the reference in web browser
+Then you can enter your query to search, it support fuzzy search, ngram search.
+
+It will ask you to wait for building the search index for the first time. After that, it will be very fast to search.
+
+The dataset will be updated automatically every 30 days. You can also use ``!~`` followed by any query to force update the dataset. For example ``tf``, then ``aws s3 bucket!~``.
+
+**Keyboard shortcuts**:
+
+- hit ``Ctrl + E`` or ``UP`` to move item selection up.
+- hit ``Ctrl + R`` to scroll item selection up.
+- hit ``Ctrl + D`` or ``DOWN`` to move item selection up.
+- hit ``Ctrl + F`` to scroll item selection up.
+- hit ``Ctrl + H`` or ``LEFT`` to move query input cursor to the left (this won't work on Windows).
+- hit ``Ctrl + L`` or ``RIGHT`` to move query input cursor to the right.
+- hit ``Ctrl + G`` to move query input cursor to the previous word.
+- hit ``Ctrl + K`` to move query input cursor to the next word.
+- hit ``Ctrl + X`` to clear the query input.
+- hit ``BACKSPACE`` to delete query input backward.
+- hit ``DELETE`` to delete query input forward.
+- hit ``Enter`` to **open the reference in web browser**.
+- hit ``Ctrl + A`` to copy the url to clipboard.
 
 
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/41de65f4-424e-429f-a802-18fa67e0517b
+Request for New Dataset
+------------------------------------------------------------------------------
+You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues/new>`_ and add the ``new dataset`` label to request for a new dataset. Please leave your comments and show me the link to the dataset you want to add.
+
+
+Supported Dataset
+------------------------------------------------------------------------------
+
+
+Terraform Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Support AWS, Azure, GCP.
+
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/189175f1-dcf1-4e21-bd7e-c416e5f7ede7
+
+
+AWS CDK Python Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/87f83c34-c81b-4d1f-968c-2c1867172d33
+
+
+
+AWS boto3 Python SDK Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/7cd2244f-f734-4bac-8690-ad5aadbcb0f4
 
 
 .. _install:
