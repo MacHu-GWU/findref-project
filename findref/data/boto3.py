@@ -2,7 +2,7 @@
 
 import typing as T
 import re
-import subprocess
+import random
 import dataclasses
 
 import sayt.api as sayt
@@ -11,7 +11,6 @@ from bs4 import BeautifulSoup
 
 from ..http import get_html_with_cache
 from ..paths import dir_findref_home
-from ..os_platform import IS_WINDOWS
 from ._utils import (
     Item,
     preprocess_query,
@@ -30,12 +29,13 @@ dir_cache = _dir_home.joinpath(".cache")
 
 
 # ------------------------------------------------------------------------------
-# Parse home page
+# Section 1. Download dataset
 # ------------------------------------------------------------------------------
 @dataclasses.dataclass
 class AWSService:
     """
-    ServiceHomepage Dataclass
+    AWS Service data model.
+
     :param name: it is the clickable text in the boto3 document homepage sidebar.
         For example, for Identity Access Management, the url is
         https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html,
@@ -44,58 +44,23 @@ class AWSService:
         For example, for Elastic Block Storage service, the url is
         https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html,
         the last part is "iam".
-    :param doc_url: the boto3 document url
-    :param service_id: the service id that can be used in boto3.client("${service_id}")
+    :param doc_url: the boto3 document url, for example, the IAM document url is
+        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html
     """
 
     name: str = dataclasses.field()
     href_name: str = dataclasses.field()
     doc_url: str = dataclasses.field()
-    service_id: str = dataclasses.field()
-
-    @property
-    def name_snake_case(self) -> str:
-        return self.name.lower().replace("-", "_")
-
-    @property
-    def service_id_snake_case(self) -> str:
-        return self.service_id.lower().replace("-", "_")
-
-    @property
-    def service_id_camel_case(self) -> str:
-        return "".join(
-            [word[0].upper() + word[1:] for word in self.name.lower().split("-")]
-        )
 
 
-def extract_service_id_from_service_page(html: str) -> str:
-    """
-    Given an AWS Service boto3 API documentation webpage HTML,
-    extract the string token that used to create boto3 client.
-    For example, given IAM boto3 API doc at https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html
-    it returns "iam", so we can use boto3.client("iam") to create ebs client.
-
-    :param html:
-    :return: service id
-    """
-    pattern = re.compile("client = boto3.client\('[\d\D]*'\)")
-    soup = BeautifulSoup(html, "html.parser")
-    div_client = soup.find("div", class_="highlight-default notranslate")
-    service_id = None
-    for line in div_client.text.split("\n"):
-        res = re.findall(pattern, line)
-        if len(res):
-            service_id = res[0].split("'")[1]
-    return service_id
-
-
-# ------------------------------------------------------------------------------
-# Parse service page
-# ------------------------------------------------------------------------------
 def extract_aws_service_list_from_home_page(html: str) -> T.List[AWSService]:
     """
-    get all AWS Service boto3 api homepage from the boto3 doc homepage,
+    Get all AWS Service boto3 api homepage from the boto3 doc homepage,
     from its sidebar.
+
+    :param html: the boto3 doc homepage html content.
+
+    :return: a list of AWS Service data model.
     """
     aws_service_list = list()
     soup = BeautifulSoup(html, "html.parser")
@@ -110,14 +75,13 @@ def extract_aws_service_list_from_home_page(html: str) -> T.List[AWSService]:
                 name=name,
                 href_name=href_name,
                 doc_url=doc_url,
-                service_id="",
             )
             # print(aws_service)
             aws_service_list.append(aws_service)
     return aws_service_list
 
 
-def get_all_aws_service() -> T.List[AWSService]:
+def get_aws_service_list_from_home_page() -> T.List[AWSService]:
     """
     get all AWS Service boto3 api homepage from the boto3 doc homepage,
     from its sidebar.
@@ -126,6 +90,36 @@ def get_all_aws_service() -> T.List[AWSService]:
     html = get_html_with_cache(url_available_services)
     aws_service_list = extract_aws_service_list_from_home_page(html)
     return aws_service_list
+
+
+def extract_service_id_from_service_page(soup: BeautifulSoup) -> str:
+    """
+    Given an AWS Service boto3 API documentation webpage HTML,
+    extract the string token that used to create boto3 client.
+
+    Example:
+
+    - https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html
+        is the IAM document, the content of the page is the ``html``.
+    - It returns ``iam``, the argument in ``boto3.client("iam")``.
+
+    :param soup: BeautifulSoup object created by the AWS service document page html content
+    :return: the AWS service id for boto3 client
+    """
+    # locate the following HTML content
+    #
+    # import boto3
+    #
+    # client = boto3.client('iam')
+    div_client = soup.find("div", class_="highlight-default notranslate")
+    service_id = None
+    # extract the service id
+    pattern = re.compile("client = boto3.client\('[\d\D]*'\)")
+    for line in div_client.text.split("\n"):
+        res = re.findall(pattern, line)
+        if len(res):
+            service_id = res[0].split("'")[1]
+    return service_id
 
 
 @dataclasses.dataclass
@@ -148,16 +142,19 @@ class Record:
     url: str = dataclasses.field()
 
 
-def extract_records(aws_service: AWSService) -> T.List[Record]:
+def extract_records_from_aws_service_page(
+    soup: BeautifulSoup,
+    service_id: str,
+    service_name: str,
+) -> T.List[Record]:
     """
     Given an AWS service page like https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html
     extract all client methods and paginator methods.
     """
     records = list()
-    html = get_html_with_cache(aws_service.doc_url)
-    soup = BeautifulSoup(html, "html.parser")
 
     # extract client methods
+    # locate the "Client" section
     section = soup.find("section", id="client")
     if section is not None:
         for a in section.find_all("a", class_="reference internal"):
@@ -167,8 +164,8 @@ def extract_records(aws_service: AWSService) -> T.List[Record]:
                 api_url = f"https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/{href}"
                 record = Record(
                     type="client",
-                    service_id=aws_service.service_id,
-                    service_name=aws_service.name,
+                    service_id=service_id,
+                    service_name=service_name,
                     method=method_name,
                     url=api_url,
                 )
@@ -177,6 +174,7 @@ def extract_records(aws_service: AWSService) -> T.List[Record]:
                 pass
 
     # extract paginator methods
+    # locate the "Paginators" section
     section = soup.find("section", id="paginators")
     if section is not None:
         for a in section.find_all("a", class_="reference internal"):
@@ -186,8 +184,8 @@ def extract_records(aws_service: AWSService) -> T.List[Record]:
                 api_url = f"https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/{href}"
                 record = Record(
                     type="pagi",
-                    service_id=aws_service.service_id,
-                    service_name=aws_service.name,
+                    service_id=service_id,
+                    service_name=service_name,
                     method=method_name,
                     url=api_url,
                 )
@@ -197,17 +195,38 @@ def extract_records(aws_service: AWSService) -> T.List[Record]:
     return records
 
 
-def downloader(first_n_service: int = 999) -> T.List[T.Dict[str, T.Any]]:
-    aws_service_list = get_all_aws_service()
+def get_record_list_from_boto3_website(
+    first_n_service: int = 999,
+    random_first_n: bool = False,
+) -> T.List[Record]:
+    aws_service_list = get_aws_service_list_from_home_page()
     records = list()
-    for aws_service in aws_service_list[:first_n_service]:
+    if random_first_n:
+        random.shuffle(aws_service_list)
+    if first_n_service:
+        aws_service_list = aws_service_list[:first_n_service]
+    for aws_service in aws_service_list:
         html = get_html_with_cache(aws_service.doc_url)
-        service_id = extract_service_id_from_service_page(html)
-        aws_service.service_id = service_id
+        soup = BeautifulSoup(html, "html.parser")
+        service_id = extract_service_id_from_service_page(soup)
+        _records = extract_records_from_aws_service_page(
+            soup, service_id, aws_service.name
+        )
         records.extend(
-            (dataclasses.asdict(record) for record in extract_records(aws_service))
+            extract_records_from_aws_service_page(soup, service_id, aws_service.name)
         )
     return records
+
+
+# ------------------------------------------------------------------------------
+# Section 2. Search Engine
+# ------------------------------------------------------------------------------
+def downloader(
+    first_n_service: int = 999,
+    random_first_n: bool = False,
+) -> T.List[T.Dict[str, T.Any]]:
+    records = get_record_list_from_boto3_website(first_n_service, random_first_n)
+    return [dataclasses.asdict(record) for record in records]
 
 
 def cache_key_def(
@@ -239,14 +258,17 @@ fields = [
     sayt.KeywordField(
         name="type",
         stored=True,
+        field_boost=3.0,
     ),
     sayt.TextField(
         name="srv",
         stored=True,
+        field_boost=2.0,
     ),
     sayt.TextField(
         name="srv_id",
         stored=True,
+        field_boost=2.0,
     ),
     sayt.TextField(
         name="meth",
@@ -257,12 +279,14 @@ fields = [
         stored=True,
         minsize=2,
         maxsize=6,
+        field_boost=2.0,
     ),
     sayt.NgramWordsField(
         name="srv_id_ng",
         stored=True,
         minsize=2,
         maxsize=6,
+        field_boost=2.0,
     ),
     sayt.NgramWordsField(
         name="meth_ng",
@@ -338,6 +362,11 @@ def handler(query: str, ui: afwf_shell.UI):
 
 
 def main():
+    """
+    Search Boto3 AWS Python SDK reference.
+
+    Search boto3 API input output reference in https://boto3.amazonaws.com/v1/documentation/api/latest/index.html.
+    """
     afwf_shell.debugger.enable()
     afwf_shell.debugger.path_log_txt.unlink(missing_ok=True)
     ui = afwf_shell.UI(handler=handler)
