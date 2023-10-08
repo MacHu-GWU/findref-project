@@ -1,5 +1,18 @@
 # -*- coding: utf-8 -*-
 
+"""
+Terraform reference download strategy
+
+1. 你可以在 https://registry.terraform.io/search/providers?namespace=hashicorp 找到
+    所有的 providers 的列表.
+2. 随便点进去一个, 例如 `AWS <https://registry.terraform.io/providers/hashicorp/aws/latest>`_,
+    在 "Source Code" 附近可以看到文档的 GitHub 源码仓库.
+3. 文档源码仓库都会有一个 ``website/docs/`` 目录, 其中 ``r`` 目录是所有的 Resource 的文档,
+    而 ``d`` 目录是 ``Data Source`` 的文档. 这两个目录下都是一堆 Markdown 文件, 其中文件名
+    就是 URL 的一部分. 而文件内容的 Markdown 一开始的 metadata 中的 subcategory 就是
+    该 Resource 所属的 AWS Service, Description 则是该 Resource 的描述.
+"""
+
 import typing as T
 import os
 import shutil
@@ -10,7 +23,6 @@ import sayt.api as sayt
 import afwf_shell.api as afwf_shell
 
 from ..paths import dir_findref_home
-from ..os_platform import IS_WINDOWS
 from ._utils import (
     Item,
     preprocess_query,
@@ -31,10 +43,16 @@ dir_git_repos.mkdir(parents=True, exist_ok=True)
 
 
 # ------------------------------------------------------------------------------
-#
+# Section 1. Download dataset
 # ------------------------------------------------------------------------------
 @dataclasses.dataclass
 class Provider:
+    """
+    List of hashicorp providers: https://registry.terraform.io/search/providers?namespace=hashicorp
+
+    Click on the provider, then you can find the document source repo near "Source Code" section.
+    """
+
     provider_name: str
     provider_short_name: str
     repo_name: str
@@ -129,7 +147,11 @@ class Record:
     description: str
 
 
-def extract_record_for_provider(provider: Provider) -> T.List[Record]:
+def extract_record_list_for_provider(provider: Provider) -> T.List[Record]:
+    """
+    Note, we need ``markdown`` and ``markdown-full-yaml-metadata`` library to parse
+    the markdown files.
+    """
     import markdown
 
     md = markdown.Markdown(extensions=["full_yaml_metadata"])
@@ -154,17 +176,23 @@ def extract_record_for_provider(provider: Provider) -> T.List[Record]:
     return records
 
 
-def downloader() -> T.List[T.Dict[str, T.Any]]:
-    clone_all_repos_again()
+def get_record_list_from_hashicorp_website(
+    skip_clone: bool = False
+) -> T.List[Record]:
+    if skip_clone is False:
+        clone_all_repos_again()
     records = list()
     for provider in PROVIDERS:
-        records.extend(
-            [
-                dataclasses.asdict(record)
-                for record in extract_record_for_provider(provider)
-            ]
-        )
+        records.extend(extract_record_list_for_provider(provider))
     return records
+
+
+# ------------------------------------------------------------------------------
+# Section 2. Search Engine
+# ------------------------------------------------------------------------------
+def downloader() -> T.List[T.Dict[str, T.Any]]:
+    records = get_record_list_from_hashicorp_website()
+    return [dataclasses.asdict(record) for record in records]
 
 
 def cache_key_def(
@@ -196,15 +224,18 @@ fields = [
         name="provider",
         stored=True,
         lowercase=True,
+        field_boost=10.0,
     ),
     sayt.KeywordField(
         name="type",
         stored=True,
         lowercase=True,
+        field_boost=5.0,
     ),
     sayt.TextField(
         name="cate",
         stored=True,
+        field_boost=2.0,
     ),
     sayt.TextField(
         name="item",
@@ -215,6 +246,7 @@ fields = [
         stored=True,
         minsize=2,
         maxsize=6,
+        field_boost=2.0,
     ),
     sayt.NgramWordsField(
         name="item_ng",
@@ -302,6 +334,11 @@ def handler(query: str, ui: afwf_shell.UI):
 
 
 def main():
+    """
+    Search Terraform reference.
+
+    Search resource and dataset declaration in https://registry.terraform.io/namespaces/hashicorp.
+    """
     try:
         import markdown
     except ImportError:

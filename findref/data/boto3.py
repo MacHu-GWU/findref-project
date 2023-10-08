@@ -1,5 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""
+Boto3 reference download strategy
+
+1. 先到 https://boto3.amazonaws.com/v1/documentation/api/latest/index.html 抓取
+    左边侧边栏里的所有的 AWS Service 的列表, 包括名字, 链接.
+2. 然后到每个 service 的 API 页面, 以 IAM 为例
+    https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html,
+    先在上面的部分从 ``client = boto3.client('iam')`` 代码块中提取 service_id, 然后
+    提取所有的 client 和 paginator 的 method 名字.
+"""
+
 import typing as T
 import re
 import random
@@ -40,16 +51,11 @@ class AWSService:
         For example, for Identity Access Management, the url is
         https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html,
         the clickable text in the sidebar is "IAM".
-    :param href_name: the last part of the document url.
-        For example, for Elastic Block Storage service, the url is
-        https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html,
-        the last part is "iam".
     :param doc_url: the boto3 document url, for example, the IAM document url is
         https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iam.html
     """
 
     name: str = dataclasses.field()
-    href_name: str = dataclasses.field()
     doc_url: str = dataclasses.field()
 
 
@@ -73,7 +79,6 @@ def extract_aws_service_list_from_home_page(html: str) -> T.List[AWSService]:
             doc_url = f"https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/{href_name}"
             aws_service = AWSService(
                 name=name,
-                href_name=href_name,
                 doc_url=doc_url,
             )
             # print(aws_service)

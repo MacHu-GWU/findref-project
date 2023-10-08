@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module implements the command line interface.
+"""
+
 import fire
 
 from .data.boto3 import main as boto3_main
