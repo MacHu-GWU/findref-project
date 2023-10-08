@@ -214,6 +214,11 @@ def handler(query: str, ui: afwf_shell.UI):
 
 
 def main():
+    """
+    Search AWS CDK Python reference.
+
+    Search CDK Construct declaration reference in https://docs.aws.amazon.com/cdk/api/v2/python/.
+    """
     afwf_shell.debugger.enable()
     afwf_shell.debugger.path_log_txt.unlink(missing_ok=True)
     ui = afwf_shell.UI(handler=handler)
