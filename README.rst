@@ -50,6 +50,10 @@
 
 Welcome to ``findref`` Documentation
 ==============================================================================
+``findref`` is an interactive terminal app that can search tech documentation reference. It is Python, cross-platform, easy-to-install, and blazing fast.
+
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/e7bc899d-cf8b-46ea-84e3-2437e5a65014
+    :align: center
 
 
 Usage Example
@@ -59,16 +63,14 @@ Usage Example
     # install
     $ pip install findref
 
-    # enter the dataset name
-    $ tf # Terraform reference
-    $ cdk-python # AWS CDK Python reference
-    $ boto3 # AWS boto3 Python SDK reference
+    # enter the interactive terminal app
+    $ fr
 
 Then you can enter your query to search, it support fuzzy search, ngram search.
 
 It will ask you to wait for building the search index for the first time. After that, it will be very fast to search.
 
-The dataset will be updated automatically every 30 days. You can also use ``!~`` followed by any query to force update the dataset. For example ``tf``, then ``aws s3 bucket!~``.
+The dataset will be updated automatically every 30 days. You can also use ``!~`` followed by any query to force update the dataset. For example, if ``tf aws s3 bucket`` doesn't give you result, you can use ``tf aws s3 bucket!~`` to search again on the latest data.
 
 **Keyboard shortcuts**:
 
@@ -94,13 +96,15 @@ You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues
 
 Supported Dataset
 ------------------------------------------------------------------------------
+.. contents::
+    :class: this-will-duplicate-information-and-it-is-still-useful-here
+    :depth: 1
+    :local:
 
 
-Terraform Reference
+AWS boto3 Python SDK Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Support AWS, Azure, GCP.
-
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/189175f1-dcf1-4e21-bd7e-c416e5f7ede7
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/7cd2244f-f734-4bac-8690-ad5aadbcb0f4
 
 
 AWS CDK Python Reference
@@ -108,10 +112,19 @@ AWS CDK Python Reference
 .. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/87f83c34-c81b-4d1f-968c-2c1867172d33
 
 
-
-AWS boto3 Python SDK Reference
+AWS CDK TypeScript Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/7cd2244f-f734-4bac-8690-ad5aadbcb0f4
+
+
+PySpark Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Terraform Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Support AWS, Azure, GCP.
+
+.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/189175f1-dcf1-4e21-bd7e-c416e5f7ede7
 
 
 .. _install:

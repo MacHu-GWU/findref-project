@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Package Description.
+Find technical reference document in blink
 """
 
 from ._version import __version__

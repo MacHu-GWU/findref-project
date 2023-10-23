@@ -15,11 +15,12 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.0.7 (Backlog)
+0.1.1 (Backlog)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
-- The rebuild index should be automic, we should use a temp folder to redownload the dataset and rebuild the index, then we move the temp folder to the original folder.
+- Removed all "downloading dataset" logic, create another project to publish the dataset every month.
+- Rework the UI implementation, we no longer need to add a lots of code for adding a new dataset.
 
 **Minor Improvements**
 

@@ -185,9 +185,7 @@ if __name__ == "__main__":
         extras_require=EXTRA_REQUIRE,
         entry_points={
             "console_scripts": [
-                "boto3=findref.cli:run_boto3",
-                "cdk-python=findref.cli:run_cdk_python",
-                "tf=findref.cli:run_tf",
+                "fr=findref.cli:main",
             ],
         },
     )
