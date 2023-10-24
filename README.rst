@@ -66,7 +66,7 @@ Usage Example
     # enter the interactive terminal app
     $ fr
 
-Then you can follow the hint and enter your query to search, it support fuzzy search, ngram search (See 🚀 `Demo <supported-dataset`_)
+Then you can follow the hint and enter your query to search, it support fuzzy search, ngram search (See 🚀 `Demo <supported-dataset>`_)
 
 It will ask you to wait for building the search index for the first time. After that, it will be very fast to search.
 
