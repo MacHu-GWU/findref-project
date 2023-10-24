@@ -1,6 +1,6 @@
 ---
 name: Request for new dataset
-about: 
+about: suggest a new dataset to be added to the dataset list
 title: "[New Dataset] <the name of the dataset>"
 labels: feature
 assignees: MacHu-GWU
