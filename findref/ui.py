@@ -195,6 +195,9 @@ def handler(query: str, ui: zf.UI):  # pragma: no cover
 
 
 def main():  # pragma: no cover
+    """
+    Enter findref interactive UI. Just type `fr` in your terminal.
+    """
     zf.debugger.enable()
     zf.debugger.path_log_txt.unlink(missing_ok=True)
     ui = zf.UI(handler=handler, capture_error=False)
