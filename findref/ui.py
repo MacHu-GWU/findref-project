@@ -128,8 +128,15 @@ def handler_for_searching_reference(
         dir_cache=dir_cache,
     )
 
+    # preprocess query, automatically add fuzzy search term
+    words = [word.strip() for word in query.split() if word.strip()]
+    words = [f"{word}~1" for word in words]
+    new_query = " ".join(words)
+    if not new_query:
+        new_query = "*"
+    # print(f"new_query = {new_query!r}")
     if _test:
-        return search(dataset=dataset, ds=ds, query=query, limit=limit)
+        return search(dataset=dataset, ds=ds, query=new_query, limit=limit)
 
     # display "creating index ..." message
     if ds.cache_key not in ds.cache:
@@ -140,7 +147,7 @@ def handler_for_searching_reference(
         ui.print_query()
         ui.print_items()
 
-        return search(dataset=dataset, ds=ds, query=query, limit=limit)
+        return search(dataset=dataset, ds=ds, query=new_query, limit=limit)
 
     # manually refresh data
     if query.strip().endswith("!~"):
@@ -160,7 +167,7 @@ def handler_for_searching_reference(
             limit=limit,
         )
 
-    return search(dataset=dataset, ds=ds, query=query, limit=limit)
+    return search(dataset=dataset, ds=ds, query=new_query, limit=limit)
 
 
 def handler(query: str, ui: zf.UI):  # pragma: no cover
@@ -180,8 +187,6 @@ def handler(query: str, ui: zf.UI):  # pragma: no cover
     elif (q.trimmed_parts[0] in dataset_set) and (len(q.parts) > 1):
         dataset = q.trimmed_parts[0]
         new_query = " ".join(q.parts[1:])
-        if not new_query:
-            new_query = "*"
         return handler_for_searching_reference(dataset, new_query, ui)
     # example
     # - "dataset name query"

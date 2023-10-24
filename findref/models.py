@@ -141,11 +141,19 @@ class CommonDocument(BaseDocument):
         return " ".join([word.strip() for word in s.split() if word.strip()])
 
 
+def tokenify(s: str) -> str:
+    """
+    Sometimes the default tokenizer analyzer is not good enough, we need to
+    preprocess the TextField before indexing it.
+    """
+    for char in "._-":
+        s = s.replace(char, " ")
+    return s
+
+
 # ------------------------------------------------------------------------------
 # Airflow
 # ------------------------------------------------------------------------------
-
-
 @dataclasses.dataclass
 class AirflowRecord(BaseRecord):
     """
@@ -171,9 +179,9 @@ class AirflowRecord(BaseRecord):
     def to_doc(self) -> "AirflowDocument":
         return AirflowDocument(
             url=self.url,
-            sub_doc=self.sub_doc,
+            sub_doc=tokenify(self.sub_doc),
             sub_doc_ng=self.sub_doc,
-            header=self.title,
+            header=tokenify(self.title),
             header_ng=self.title,
         )
 
@@ -201,7 +209,7 @@ class AirflowDocument(CommonDocument):
 
     @property
     def title(self) -> str:
-        return f"{self.sub_doc} | {self.header}"
+        return f"{self.sub_doc_ng} | {self.header_ng}"
 
 
 airflow_fields = [
@@ -284,11 +292,11 @@ class Boto3Record(BaseRecord):
         return Boto3Document(
             url=self.url,
             type=self.type,
-            srv=self.service_name,
+            srv=tokenify(self.service_name),
             srv_ng=self.service_name,
-            srv_id=self.service_id,
+            srv_id=tokenify(self.service_id),
             srv_id_ng=self.service_id,
-            meth=self.method,
+            meth=tokenify(self.method),
             meth_ng=self.method,
         )
 
@@ -319,7 +327,7 @@ class Boto3Document(CommonDocument):
 
     @property
     def title(self) -> str:
-        return f"{self.type} | {self.srv_id.lower()}.{self.meth}"
+        return f"{self.type} | {self.srv_id_ng.lower()}.{self.meth_ng}"
 
 
 boto3_fields = [
@@ -419,9 +427,9 @@ class CdkPythonRecord(BaseRecord):
     def to_doc(self) -> "CdkPythonDocument":
         return CdkPythonDocument(
             url=self.url,
-            srv=self.service,
+            srv=tokenify(self.service),
             srv_ng=self.service,
-            obj=self.object,
+            obj=tokenify(self.object),
             obj_ng=self.object,
         )
 
@@ -446,7 +454,7 @@ class CdkPythonDocument(CommonDocument):
 
     @property
     def title(self) -> str:
-        return f"{self.srv} | {self.obj}"
+        return f"{self.srv_ng} | {self.obj_ng}"
 
 
 cdk_python_fields = [
@@ -509,11 +517,11 @@ class CdkTypeScriptRecord(BaseRecord):
     def to_doc(self) -> "CdkTypeScriptDocument":
         return CdkTypeScriptDocument(
             url=self.url,
-            srv=self.service_name,
+            srv=tokenify(self.service_name),
             srv_ng=self.service_name,
-            res_type=self.resource_type,
+            res_type=tokenify(self.resource_type),
             res_type_ng=self.resource_type,
-            res_name=self.resource_name,
+            res_name=tokenify(self.resource_name),
             res_name_ng=self.resource_name,
         )
 
@@ -542,7 +550,7 @@ class CdkTypeScriptDocument(CommonDocument):
 
     @property
     def title(self) -> str:
-        return f"{self.srv} | {self.res_type} - {self.res_name}"
+        return f"{self.srv_ng} | {self.res_type_ng} - {self.res_name_ng}"
 
 
 cdk_ts_fields = [
@@ -617,9 +625,9 @@ class PySparkRecord(BaseRecord):
         return PySparkDocument(
             h1=self.header1,
             h1_ng=self.header1,
-            h2=self.header2,
+            h2=tokenify(self.header2) if self.header2 else None,
             h2_ng=self.header2,
-            h3=self.header3,
+            h3=tokenify(self.header3) if self.header3 else None,
             h3_ng=self.header3,
             url=self.url,
         )
@@ -649,11 +657,11 @@ class PySparkDocument(CommonDocument):
 
     @property
     def title(self) -> str:
-        parts = [self.h1]
-        if self.h2:
-            parts.append(self.h2)
-        if self.h3:
-            parts.append(self.h3)
+        parts = [self.h1_ng]
+        if self.h2_ng:
+            parts.append(self.h2_ng)
+        if self.h3_ng:
+            parts.append(self.h3_ng)
         return " | ".join(parts)
 
 
@@ -820,9 +828,9 @@ class TfRecord(BaseRecord):
             url=self.url,
             provider=self.provider,
             type=self.type,
-            cate=self.subcategory,
+            cate=tokenify(self.subcategory),
             cate_ng=self.subcategory,
-            item=self.item_name,
+            item=tokenify(self.item_name),
             item_ng=self.item_name,
             desc=self.description,
         )
@@ -857,7 +865,7 @@ class TfDocument(CommonDocument):
 
     @property
     def title(self) -> str:
-        return f"{self.provider} {self.type}: {self.cate} | {self.item}"
+        return f"{self.provider} {self.type}: {self.cate_ng} | {self.item_ng}"
 
 
 tf_fields = [
