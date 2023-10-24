@@ -20,6 +20,7 @@ T_DATA = T.Dict[str, T.Any]
 
 
 class DataSetEnum(str, enum.Enum):
+    airflow = "airflow"  # Airflow
     boto3 = "boto3"  # AWS Python SDK - boto3
     cdk_python = "cdk_python"  # AWS CDK Python
     cdk_ts = "cdk_ts"  # AWS CDK TypeScript
@@ -138,6 +139,98 @@ class CommonDocument(BaseDocument):
         for char in _title_to_autocomplete_delimiters:
             s = s.replace(char, " ")
         return " ".join([word.strip() for word in s.split() if word.strip()])
+
+
+# ------------------------------------------------------------------------------
+# Airflow
+# ------------------------------------------------------------------------------
+
+
+@dataclasses.dataclass
+class AirflowRecord(BaseRecord):
+    """
+    Example:
+
+    - doc url: https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/operators/s3/index.html
+    - doc source: https://github.com/apache/airflow/blob/main/docs/apache-airflow-providers-amazon/operators/s3/index.rst
+
+    :param url: see above
+    :param sub_doc: the name of the sub documentation site, in this example, it is ``"providers-amazon"``.
+        with ``"apache-airflow-"`` stripped.
+    :param title: the header title in the *.rst file, in this example, it is ``"Amazon S3 Operators"``.
+    """
+
+    url: str
+    sub_doc: str
+    title: str
+
+    @property
+    def sort_key(self) -> str:
+        return self.url
+
+    def to_doc(self) -> "AirflowDocument":
+        return AirflowDocument(
+            url=self.url,
+            sub_doc=self.sub_doc,
+            sub_doc_ng=self.sub_doc,
+            header=self.title,
+            header_ng=self.title,
+        )
+
+
+@dataclasses.dataclass
+class AirflowDocument(CommonDocument):
+    """
+    Example:
+
+    - doc url: https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/operators/s3/index.html
+    - doc source: https://github.com/apache/airflow/blob/main/docs/apache-airflow-providers-amazon/operators/s3/index.rst
+
+    :param url: same as :attr:`AirflowRecord.url`
+    :param sub_doc: same as :attr:`AirflowRecord.sub_doc`
+    :param sub_doc_ng: same as :attr:`AirflowRecord.sub_doc`
+    :param header: same as :attr:`AirflowRecord.title`
+    :param header_ng: same as :attr:`AirflowRecord.title`
+    """
+
+    url: str
+    sub_doc: str
+    sub_doc_ng: str
+    header: str
+    header_ng: str
+
+    @property
+    def title(self) -> str:
+        return f"{self.sub_doc} | {self.header}"
+
+
+airflow_fields = [
+    sayt.StoredField(
+        name="url",
+    ),
+    sayt.TextField(
+        name="sub_doc",
+        stored=True,
+        field_boost=5.0,
+    ),
+    sayt.NgramWordsField(
+        name="sub_doc_ng",
+        stored=True,
+        field_boost=5.0,
+        minsize=2,
+        maxsize=6,
+    ),
+    sayt.TextField(
+        name="header",
+        stored=True,
+    ),
+    sayt.NgramWordsField(
+        name="header_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+    ),
+]
 
 
 # ------------------------------------------------------------------------------
@@ -334,7 +427,7 @@ class CdkPythonRecord(BaseRecord):
 
 
 @dataclasses.dataclass
-class CdkPythonDocument(BaseDocument):
+class CdkPythonDocument(CommonDocument):
     """
     Example: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
 
@@ -815,6 +908,10 @@ tf_fields = [
 # ==============================================================================
 # NOTE: don't forget to update this mapper when you add a new dataset
 _dataset_mapper = {
+    DataSetEnum.airflow.value: {
+        "doc_class": AirflowDocument,
+        "fields": airflow_fields,
+    },
     DataSetEnum.boto3.value: {
         "doc_class": Boto3Document,
         "fields": boto3_fields,
@@ -842,6 +939,7 @@ def get_doc_class(
     dataset: str,
 ) -> T.Type[
     T.Union[
+        AirflowDocument,
         Boto3Document,
         CdkPythonDocument,
         CdkTypeScriptDocument,

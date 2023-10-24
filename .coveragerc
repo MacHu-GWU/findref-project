@@ -7,6 +7,8 @@ omit =
     findref/vendor/*
     findref/_version.py
     findref/cli.py
+    findref/cache.py
+    findref/models.py
     findref/paths.py
 
 [report]

@@ -45,13 +45,13 @@ class UrlItem(zf.Item):
     Common item class for all datasets.
     """
 
-    def enter_handler(self, ui: zf.UI):
+    def enter_handler(self, ui: zf.UI):  # pragma: no cover
         """
         By default, Enter = open url in browser.
         """
         zf.open_url(self.arg)
 
-    def ctrl_a_handler(self, ui: zf.UI):
+    def ctrl_a_handler(self, ui: zf.UI):  # pragma: no cover
         """
         By default, Ctrl + A = copy url to clipboard.
         """
@@ -76,13 +76,14 @@ def search(
     ds: sayt.DataSet,
     query: str,
     refresh_data: bool = False,
+    limit: int = 50,
 ) -> T.List[UrlItem]:
     """
     Search the given dataset and returns the item objects for UI.
     """
     dct_list = ds.search(
         query=query,
-        limit=50,
+        limit=limit,
         simple_response=True,
         refresh_data=refresh_data,
         verbose=False,
@@ -101,7 +102,7 @@ def search(
     ]
 
 
-def creating_index_items() -> T.List[zf.Item]:
+def creating_index_items() -> T.List[zf.Item]:  # pragma: no cover
     return [
         zf.Item(
             uid="uid",
@@ -111,7 +112,13 @@ def creating_index_items() -> T.List[zf.Item]:
     ]
 
 
-def handler_for_searching_reference(dataset: str, query: str, ui: zf.UI):
+def handler_for_searching_reference(
+    dataset: str,
+    query: str,
+    ui: zf.UI,
+    limit: int = 50,
+    _test: bool = False,
+):  # pragma: no cover
     """
     This handler search the reference url using the given dataset and query.
     """
@@ -120,6 +127,9 @@ def handler_for_searching_reference(dataset: str, query: str, ui: zf.UI):
         dir_index=dir_index,
         dir_cache=dir_cache,
     )
+
+    if _test:
+        return search(dataset=dataset, ds=ds, query=query, limit=limit)
 
     # display "creating index ..." message
     if ds.cache_key not in ds.cache:
@@ -130,7 +140,7 @@ def handler_for_searching_reference(dataset: str, query: str, ui: zf.UI):
         ui.print_query()
         ui.print_items()
 
-        return search(dataset=dataset, ds=ds, query=query)
+        return search(dataset=dataset, ds=ds, query=query, limit=limit)
 
     # manually refresh data
     if query.strip().endswith("!~"):
@@ -147,12 +157,13 @@ def handler_for_searching_reference(dataset: str, query: str, ui: zf.UI):
             ds=ds,
             query=query.strip()[:-2],
             refresh_data=True,
+            limit=limit,
         )
 
-    return search(dataset=dataset, ds=ds, query=query)
+    return search(dataset=dataset, ds=ds, query=query, limit=limit)
 
 
-def handler(query: str, ui: zf.UI):
+def handler(query: str, ui: zf.UI):  # pragma: no cover
     """
     Findref query handler.
     """
@@ -178,7 +189,7 @@ def handler(query: str, ui: zf.UI):
         return handler_for_selecting_dataset(" ".join(q.trimmed_parts), ui)
 
 
-def main():
+def main():  # pragma: no cover
     zf.debugger.enable()
     zf.debugger.path_log_txt.unlink(missing_ok=True)
     ui = zf.UI(handler=handler, capture_error=False)

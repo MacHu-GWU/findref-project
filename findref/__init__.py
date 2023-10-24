@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """
-Find technical reference document in blink
+Find technical reference document in terminal.
 """
 
 from ._version import __version__
 
-__short_description__ = "Package short description."
-__license__ = "MIT"
+__short_description__ = "Find technical reference document in terminal."
+__license__ = "GPL"
 __author__ = "Sanhe Hu"
 __author_email__ = "husanhe@gmail.com"
 __maintainer__ = "Sanhe Hu"
