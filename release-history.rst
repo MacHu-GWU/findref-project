@@ -15,18 +15,21 @@ x.y.z (Backlog)
 **Miscellaneous**
 
 
-0.1.1 (Backlog)
+0.1.1 (2023-10-24)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 **Features and Improvements**
 
 - Removed all "downloading dataset" logic, create another project to publish the dataset every month.
-- Rework the UI implementation, we no longer need to add a lots of code for adding a new dataset.
+- The initial run (crawl data and build index) is much faster now, it takes 3-10 seconds, and it used to take 10-60 seconds.
+- Rework the UI implementation, we no longer need to add a lot of code for adding a new dataset.
 
 **Minor Improvements**
 
-**Bugfixes**
+- Use asciinema to record demo.
 
 **Miscellaneous**
+
+- Improve the documentation.
 
 
 0.0.6 (2023-10-06)

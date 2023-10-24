@@ -60,7 +60,7 @@ Usage Example
 ------------------------------------------------------------------------------
 ::
 
-    # install
+    # install (you need Python3.8+)
     $ pip install findref
 
     # enter the interactive terminal app
@@ -74,24 +74,30 @@ The dataset will be updated automatically every 30 days. You can also use ``!~``
 
 **Keyboard shortcuts**:
 
-- hit ``Ctrl + E`` or ``UP`` to move item selection up.
-- hit ``Ctrl + R`` to scroll item selection up.
-- hit ``Ctrl + D`` or ``DOWN`` to move item selection up.
-- hit ``Ctrl + F`` to scroll item selection up.
-- hit ``Ctrl + H`` or ``LEFT`` to move query input cursor to the left (this won't work on Windows).
-- hit ``Ctrl + L`` or ``RIGHT`` to move query input cursor to the right.
-- hit ``Ctrl + G`` to move query input cursor to the previous word.
-- hit ``Ctrl + K`` to move query input cursor to the next word.
-- hit ``Ctrl + X`` to clear the query input.
-- hit ``BACKSPACE`` to delete query input backward.
-- hit ``DELETE`` to delete query input forward.
-- hit ``Enter`` to **open the reference in web browser**.
-- hit ``Ctrl + A`` to copy the url to clipboard.
+- ⬆️: hit ``Ctrl + E`` or ``UP`` to move item selection up.
+- ⏫: hit ``Ctrl + R`` to scroll item selection up.
+- ⬇️: hit ``Ctrl + D`` or ``DOWN`` to move item selection down.
+- ⏬: hit ``Ctrl + F`` to scroll item selection down.
+- ⬅️: hit ``Ctrl + H`` or ``LEFT`` to move query input cursor to the left (this won't work on Windows).
+- ➡️: hit ``Ctrl + L`` or ``RIGHT`` to move query input cursor to the right.
+- ⏪: hit ``Ctrl + G`` to move query input cursor to the previous word.
+- ⏩: hit ``Ctrl + K`` to move query input cursor to the next word.
+- ↩️: hit ``Ctrl + X`` to clear the query input.
+- ◀️: hit ``BACKSPACE`` to delete query input backward.
+- ▶️: hit ``DELETE`` to delete query input forward.
+- 🌐: hit ``Enter`` to **open the reference in web browser**.
+- ✅: hit ``Ctrl + A`` to copy the url to clipboard.
+- 🔴: hit ``Ctrl + C`` to quit the app.
 
 
 Request for New Dataset
 ------------------------------------------------------------------------------
-You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues/new>`_ and add the ``new dataset`` label to request for a new dataset. Please leave your comments and show me the link to the dataset you want to add.
+You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues/new>`_ and add the ``new dataset`` label to request for a new dataset. Please leave your comments, show me the link to the dataset you want to add, and provide some sample query and matched url items and ``@MacHu-GWU`` (me).
+
+
+Request for Enterprise Support
+------------------------------------------------------------------------------
+findref works for enterprise internal data too,
 
 
 Supported Dataset
@@ -110,27 +116,34 @@ Airflow Reference
 
 AWS boto3 Python SDK Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/7cd2244f-f734-4bac-8690-ad5aadbcb0f4
+.. image:: https://asciinema.org/a/616817.svg
+    :target: https://asciinema.org/a/616817
 
 
 AWS CDK Python Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/87f83c34-c81b-4d1f-968c-2c1867172d33
+.. image:: https://asciinema.org/a/616818.svg
+    :target: https://asciinema.org/a/616818
 
 
 AWS CDK TypeScript Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: https://asciinema.org/a/616819.svg
+    :target: https://asciinema.org/a/616819
 
 
 PySpark Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: https://asciinema.org/a/616821.svg
+    :target: https://asciinema.org/a/616821
 
 
 Terraform Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Support AWS, Azure, GCP.
 
-.. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/189175f1-dcf1-4e21-bd7e-c416e5f7ede7
+.. image:: https://asciinema.org/a/616822.svg
+    :target: https://asciinema.org/a/616822
 
 
 .. _install:
@@ -142,6 +155,7 @@ Install
 
 .. code-block:: console
 
+    # you need Python3.8+
     $ pip install findref
 
 To upgrade to latest version:
