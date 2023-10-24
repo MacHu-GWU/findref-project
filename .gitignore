@@ -1,7 +1,7 @@
 # User Settings
 findref.egg-info/
 tmp/
-
+*.cast
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

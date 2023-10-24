@@ -102,6 +102,12 @@ Supported Dataset
     :local:
 
 
+Airflow Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. image:: https://asciinema.org/a/616811.svg
+    :target: https://asciinema.org/a/616811
+
+
 AWS boto3 Python SDK Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://github.com/MacHu-GWU/findref-project/assets/6800411/7cd2244f-f734-4bac-8690-ad5aadbcb0f4
