@@ -92,12 +92,12 @@ The dataset will be updated automatically every 30 days. You can also use ``!~``
 
 Request for New Dataset
 ------------------------------------------------------------------------------
-You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues/new>`_ and add the ``new dataset`` label to request for a new dataset. Please leave your comments, show me the link to the dataset you want to add, and provide some sample query and matched url items and ``@MacHu-GWU`` (me).
+You can `create a new issue <https://github.com/MacHu-GWU/findref-project/issues/new?assignees=MacHu-GWU&labels=feature&projects=&template=request_for_new_dataset.md&title=%5BNew+Dataset%5D+%3Cthe+name+of+the+dataset%3E>`_ and add the ``new dataset`` label to request for a new dataset. Please leave your comments, show me the link to the dataset you want to add, and provide some sample query and matched url items and ``@MacHu-GWU`` (me).
 
 
 Request for Enterprise Support
 ------------------------------------------------------------------------------
-findref works for enterprise internal data too,
+findref works for enterprise internal dataset too. If you want a customized version to support your enterprise internal dataset, please follow the instruction in `this ticket <https://github.com/MacHu-GWU/findref-project/issues/new?assignees=MacHu-GWU&labels=enterprise+support&projects=&template=request_for_enterprise_support.md&title=%5BEnterprise+support%5D+%3Cname+of+your+company%3E>`_, our team will contact you soon.
 
 
 Supported Dataset
