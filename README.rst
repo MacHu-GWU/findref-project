@@ -102,7 +102,7 @@ findref works for enterprise internal dataset too. If you want a customized vers
 
 .. _supported-dataset:
 
-🚀 Supported Dataset
+Supported Dataset
 ------------------------------------------------------------------------------
 .. contents::
     :class: this-will-duplicate-information-and-it-is-still-useful-here
@@ -110,37 +110,37 @@ findref works for enterprise internal dataset too. If you want a customized vers
     :local:
 
 
-Airflow Reference
+🚀 Airflow Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616811.svg
     :target: https://asciinema.org/a/616811
 
 
-AWS boto3 Python SDK Reference
+🚀 AWS boto3 Python SDK Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616817.svg
     :target: https://asciinema.org/a/616817
 
 
-AWS CDK Python Reference
+🚀 AWS CDK Python Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616818.svg
     :target: https://asciinema.org/a/616818
 
 
-AWS CDK TypeScript Reference
+🚀 AWS CDK TypeScript Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616819.svg
     :target: https://asciinema.org/a/616819
 
 
-PySpark Reference
+🚀 PySpark Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616821.svg
     :target: https://asciinema.org/a/616821
 
 
-Terraform Reference
+🚀 Terraform Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Support AWS, Azure, GCP.
 
