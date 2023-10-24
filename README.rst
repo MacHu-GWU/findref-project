@@ -66,7 +66,7 @@ Usage Example
     # enter the interactive terminal app
     $ fr
 
-Then you can follow the hint and enter your query to search, it support fuzzy search, ngram search.
+Then you can follow the hint and enter your query to search, it support fuzzy search, ngram search (See 🚀 `Demo <install>`_)
 
 It will ask you to wait for building the search index for the first time. After that, it will be very fast to search.
 
@@ -100,7 +100,9 @@ Request for Enterprise Support
 findref works for enterprise internal dataset too. If you want a customized version to support your enterprise internal dataset, please follow the instruction in `this ticket <https://github.com/MacHu-GWU/findref-project/issues/new?assignees=MacHu-GWU&labels=enterprise+support&projects=&template=request_for_enterprise_support.md&title=%5BEnterprise+support%5D+%3Cname+of+your+company%3E>`_, our team will contact you soon.
 
 
-Supported Dataset
+.. _supported-dataset:
+
+🚀 Supported Dataset
 ------------------------------------------------------------------------------
 .. contents::
     :class: this-will-duplicate-information-and-it-is-still-useful-here
