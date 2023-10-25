@@ -112,6 +112,36 @@ def creating_index_items() -> T.List[zf.Item]:  # pragma: no cover
     ]
 
 
+def preprocess_query(query: T.Optional[str]) -> str:
+    """
+    Preprocess query, automatically add fuzzy search term if applicable.
+    """
+    delimiter = ".-_@+"
+    if query:
+        for char in delimiter:
+            query = query.replace(char, " ")
+        words = list()
+        for word in query.split():
+            if word.strip():
+                word = word.strip()
+                if len(word) == 1:
+                    if word == "*":
+                        words.append(word)
+                else:
+                    try:
+                        if word[-2] != "~":
+                            word = f"{word}~1"
+                    except IndexError:
+                        word = f"{word}~1"
+                    words.append(word)
+        if words:
+            return " ".join(words)
+        else:
+            return "*"
+    else:
+        return "*"
+
+
 def handler_for_searching_reference(
     dataset: str,
     query: str,
@@ -129,11 +159,7 @@ def handler_for_searching_reference(
     )
 
     # preprocess query, automatically add fuzzy search term
-    words = [word.strip() for word in query.split() if word.strip()]
-    words = [f"{word}~1" for word in words]
-    new_query = " ".join(words)
-    if not new_query:
-        new_query = "*"
+    new_query = preprocess_query(query)
     # print(f"new_query = {new_query!r}")
     if _test:
         return search(dataset=dataset, ds=ds, query=new_query, limit=limit)
