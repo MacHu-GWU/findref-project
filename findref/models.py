@@ -315,9 +315,9 @@ class AwsCloudFormationDocument(CommonDocument):
     @property
     def title(self) -> str:
         if self.prop_ng:
-            return f"{self.type_ng} : {self.srv_ng} | {self.res_ng} - {self.prop_ng}"
+            return f"{self.type_ng}: {self.srv_ng} | {self.res_ng} - {self.prop_ng}"
         else:
-            return f"{self.type_ng} : {self.srv_ng} | {self.res_ng}"
+            return f"{self.type_ng}: {self.srv_ng} | {self.res_ng}"
 
 
 aws_cloudformation_fields = [
@@ -1141,6 +1141,10 @@ _dataset_mapper = {
         "doc_class": AirflowDocument,
         "fields": airflow_fields,
     },
+    DataSetEnum.aws_cloudformation.value: {
+        "doc_class": AwsCloudFormationDocument,
+        "fields": aws_cloudformation_fields,
+    },
     DataSetEnum.boto3.value: {
         "doc_class": Boto3Document,
         "fields": boto3_fields,
@@ -1156,6 +1160,10 @@ _dataset_mapper = {
     DataSetEnum.pyspark.value: {
         "doc_class": PySparkDocument,
         "fields": pyspark_fields,
+    },
+    DataSetEnum.pandas.value: {
+        "doc_class": PandasDocument,
+        "fields": pandas_fields,
     },
     DataSetEnum.tf.value: {
         "doc_class": TfDocument,

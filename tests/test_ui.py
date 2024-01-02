@@ -35,6 +35,9 @@ def test_ui():
     items = hdl2(DataSetEnum.airflow, "amazon s3", ui, 3, _test=True)
     # pprint(items)
 
+    items = hdl2(DataSetEnum.aws_cloudformation, "s3 bucket", ui, 3, _test=True)
+    # pprint(items)
+
     items = hdl2(DataSetEnum.boto3, "s3 put object", ui, 3, _test=True)
     # pprint(items)
 
@@ -45,6 +48,9 @@ def test_ui():
     # pprint(items)
 
     items = hdl2(DataSetEnum.pyspark, "print schema", ui, 3, _test=True)
+    # pprint(items)
+
+    items = hdl2(DataSetEnum.pandas, "read csv", ui, 3, _test=True)
     # pprint(items)
 
     items = hdl2(DataSetEnum.tf, "aws res s3 bucket", ui, 3, _test=True)
