@@ -3,7 +3,7 @@
 """
 Findref data models.
 
-Version: 0.1.1
+Version: 0.2.1
 """
 
 import typing as T
@@ -21,10 +21,12 @@ T_DATA = T.Dict[str, T.Any]
 
 class DataSetEnum(str, enum.Enum):
     airflow = "airflow"  # Airflow
+    aws_cloudformation = "aws_cloudformation"  # AWS CloudFormation
     boto3 = "boto3"  # AWS Python SDK - boto3
     cdk_python = "cdk_python"  # AWS CDK Python
     cdk_ts = "cdk_ts"  # AWS CDK TypeScript
     pyspark = "pyspark"  # PySpark
+    pandas = "pandas"  # Pandas
     tf = "tf"  # Terraform
 
 
@@ -242,6 +244,138 @@ airflow_fields = [
 
 
 # ------------------------------------------------------------------------------
+# AWS CloudFormation
+# ------------------------------------------------------------------------------
+@dataclasses.dataclass
+class AwsCloudFormationRecord(BaseRecord):
+    """
+    Example: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-bucket.html
+
+    :param url: the url of the AWS resource CloudFormation document
+        In this example, it is https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-bucket.html
+    :param type: property or resource.
+    :param service: the service name in the ``AWS::${Service}::${Resource}``
+        In this example, it is ``"S3"``
+    :param resource: the resource name in the ``AWS::${Service}::${Resource}``
+        In this example, it is ``"Bucket"``
+    :param property: the resource name in the ``AWS::${Service}::${Resource}.${Property}``
+        In this example, it is ``"BucketEncryption"``
+    """
+
+    url: str
+    type: str
+    service: str
+    resource: str
+    prop: T.Optional[str] = dataclasses.field(default=None)
+
+    @property
+    def sort_key(self) -> str:
+        return " ".join([self.type, self.service, self.resource, str(self.prop)])
+
+    def to_doc(self) -> "AwsCloudFormationDocument":
+        return AwsCloudFormationDocument(
+            url=self.url,
+            type=self.type,
+            type_ng=self.type,
+            srv=self.service,
+            srv_ng=self.service,
+            res=self.resource,
+            res_ng=self.resource,
+            prop=self.prop,
+            prop_ng=self.prop,
+        )
+
+
+@dataclasses.dataclass
+class AwsCloudFormationDocument(CommonDocument):
+    """
+    Example: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-bucket.html
+
+    :param url: same as :attr:`AwsCloudFormationRecord.url``
+    :param type: same as :attr:`AwsCloudFormationRecord.type``
+    :param type_ng: same as :attr:`AwsCloudFormationRecord.type``
+    :param srv: same as :attr:`AwsCloudFormationRecord.service``
+    :param srv_ng: same as :attr:`AwsCloudFormationRecord.service``
+    :param res: same as :attr:`AwsCloudFormationRecord.resource``
+    :param res_ng: same as :attr:`AwsCloudFormationRecord.resource``
+    :param prop: same as :attr:`AwsCloudFormationRecord.prop``
+    :param prop_ng: same as :attr:`AwsCloudFormationRecord.prop``
+    """
+
+    url: str
+    type: str
+    type_ng: str
+    srv: str
+    srv_ng: str
+    res: str
+    res_ng: str
+    prop: T.Optional[str] = dataclasses.field(default=None)
+    prop_ng: T.Optional[str] = dataclasses.field(default=None)
+
+    @property
+    def title(self) -> str:
+        if self.prop_ng:
+            return f"{self.type_ng} : {self.srv_ng} | {self.res_ng} - {self.prop_ng}"
+        else:
+            return f"{self.type_ng} : {self.srv_ng} | {self.res_ng}"
+
+
+aws_cloudformation_fields = [
+    sayt.StoredField(
+        name="url",
+    ),
+    sayt.TextField(
+        name="type",
+        stored=True,
+        field_boost=10.0,
+    ),
+    sayt.NgramWordsField(
+        name="type_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+        field_boost=10.0,
+    ),
+    sayt.TextField(
+        name="srv",
+        stored=True,
+        field_boost=5.0,
+    ),
+    sayt.NgramWordsField(
+        name="srv_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+        field_boost=5.0,
+    ),
+    sayt.TextField(
+        name="res",
+        stored=True,
+        field_boost=10.0,
+    ),
+    sayt.NgramWordsField(
+        name="res_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+        field_boost=10.0,
+    ),
+    sayt.TextField(
+        name="prop",
+        stored=True,
+        field_boost=10.0,
+    ),
+    sayt.NgramWordsField(
+        name="prop_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+        field_boost=10.0,
+    ),
+]
+
+
+# ------------------------------------------------------------------------------
 # AWS Python SDK - boto3
 # ------------------------------------------------------------------------------
 @dataclasses.dataclass
@@ -406,14 +540,14 @@ class CdkPythonRecord(BaseRecord):
         Example: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
 
     :param url: the url of the object in the per-service package overview
-            In this example, it is https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
-        :param service: the service name in the text on the left hand side menu on
-            https://docs.aws.amazon.com/cdk/api/v2/python/modules.html
-            In this example, it is ``"s3"``, it is from the ``aws_cdk.aws_s3``,
-            with ``aws_cdk.aws_`` stripped off.
-        :param object: the object name in the text in the per-service package overview
-            page table on https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3.html,
-            In this example, it is ``"Bucket"``.
+        In this example, it is https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
+    :param service: the service name in the text on the left hand side menu on
+        https://docs.aws.amazon.com/cdk/api/v2/python/modules.html
+        In this example, it is ``"s3"``, it is from the ``aws_cdk.aws_s3``,
+        with ``aws_cdk.aws_`` stripped off.
+    :param object: the object name in the text in the per-service package overview
+        page table on https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3.html,
+        In this example, it is ``"Bucket"``.
     """
 
     url: str
@@ -492,7 +626,7 @@ cdk_python_fields = [
 @dataclasses.dataclass
 class CdkTypeScriptRecord(BaseRecord):
     """
-        Example: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
+    Example: https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
 
     :param url: the url of the object in the per-service package overview
             In this example, it is https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_s3/Bucket.html
@@ -606,9 +740,9 @@ class PySparkRecord(BaseRecord):
 
     :param header1: the header1 of the text in the side menu, in this example,
         it is ``"Spark SQL"``.
-    :param header2: the header1 of the text in the side menu, in this example,
+    :param header2: the header2 of the text in the side menu, in this example,
         it is ``"Core Classes"``.
-    :param header3: the header1 of the text in the side menu, in this example,
+    :param header3: the header3 of the text in the side menu, in this example,
         it is ``"sql.SparkSession"``. We strip off the ``"pyspark."`` part.
     """
 
@@ -638,7 +772,7 @@ class PySparkDocument(CommonDocument):
     """
     Example: https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/api/pyspark.sql.SparkSession.html
 
-    :param url: same as :attr:`CdkTypeScriptRecord.url``
+    :param url: same as :attr:`PySparkRecord.url``
     :param h1: same as :attr:`PySparkRecord.header1``
     :param h1_ng: same as :attr:`PySparkRecord.header1``
     :param h2: same as :attr:`PySparkRecord.header2``
@@ -702,6 +836,93 @@ pyspark_fields = [
         minsize=2,
         maxsize=6,
         field_boost=10.0,
+    ),
+]
+
+
+# ------------------------------------------------------------------------------
+# Pandas
+# ------------------------------------------------------------------------------
+@dataclasses.dataclass
+class PandasRecord(BaseRecord):
+    """
+    Example: https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html
+
+    :param header1: the header1 of the text in the side menu, in this example,
+        it is ``"Input/output"``.
+    :param header2: the header2 of the API method in the side menu, but with
+        "pandas." prefix removed, in this example, it is ``"read_csv"``.
+    """
+
+    url: str
+    header1: str
+    header2: T.Optional[str]
+
+    @property
+    def sort_key(self) -> str:
+        return " ".join([self.header1, str(self.header2)])
+
+    def to_doc(self) -> "PandasDocument":
+        return PandasDocument(
+            h1=self.header1,
+            h1_ng=self.header1,
+            h2=tokenify(self.header2) if self.header2 else None,
+            h2_ng=self.header2,
+            url=self.url,
+        )
+
+
+@dataclasses.dataclass
+class PandasDocument(CommonDocument):
+    """
+    Example: https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html
+
+    :param url: same as :attr:`PandasRecord.url``
+    :param h1: same as :attr:`PandasRecord.header1``
+    :param h1_ng: same as :attr:`PandasRecord.header1``
+    :param h2: same as :attr:`PandasRecord.header2``
+    :param h2_ng: same as :attr:`PandasRecord.header2``
+    """
+
+    url: str
+    h1: str
+    h1_ng: str
+    h2: T.Optional[str] = dataclasses.field(default=None)
+    h2_ng: T.Optional[str] = dataclasses.field(default=None)
+
+    @property
+    def title(self) -> str:
+        parts = [self.h1_ng]
+        if self.h2_ng:
+            parts.append(self.h2_ng)
+        return " | ".join(parts)
+
+
+pandas_fields = [
+    sayt.StoredField(
+        name="url",
+    ),
+    sayt.TextField(
+        name="h1",
+        stored=True,
+    ),
+    sayt.NgramWordsField(
+        name="h1_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+    ),
+    sayt.TextField(
+        name="h2",
+        stored=True,
+        field_boost=5.0,
+    ),
+    sayt.NgramWordsField(
+        name="h2_ng",
+        stored=True,
+        minsize=2,
+        maxsize=6,
+        field_boost=5.0,
     ),
 ]
 
