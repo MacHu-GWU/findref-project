@@ -116,6 +116,11 @@ Supported Dataset
     :target: https://asciinema.org/a/616811
 
 
+🚀 AWS CloudFormation Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+todo
+
+
 🚀 AWS boto3 Python SDK Reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616817.svg
@@ -138,6 +143,11 @@ Supported Dataset
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. image:: https://asciinema.org/a/616821.svg
     :target: https://asciinema.org/a/616821
+
+
+🚀 Pandas Reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+todo
 
 
 🚀 Terraform Reference
