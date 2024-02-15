@@ -5,11 +5,15 @@ This module implements the terminal UI.
 """
 
 import typing as T
+import warnings
 import dataclasses
 
 import sayt.api as sayt
 import zelfred.api as zf
-from fuzzywuzzy.process import extract
+
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    from fuzzywuzzy.process import extract
 
 from . import models
 from .paths import dir_index, dir_cache
