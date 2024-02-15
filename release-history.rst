@@ -17,7 +17,7 @@ x.y.z (Backlog)
 
 0.2.2 (2024-02-15)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-**Features and Improvements**
+**Minor Improvements**
 
 - ``python-Levenshtein`` is no longer mandatory dependencies.
 
